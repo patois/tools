@@ -186,7 +186,9 @@ reports if hypervisor is active
 
   vmon.exe 1 87
   
-restricts access to VMWare's backdoor so that only code running in CPL 0,
+restricts access to VMWare's backdoor so that only code running in CPL 0 is
+allowed to use the backdoor.
+
 This might be used to disable common VMWare detections such as "jerry" (see below).
 
 
