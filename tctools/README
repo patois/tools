@@ -1,0 +1,14 @@
+wraps a simple obfuscator, such as an add-xor-rol encoder around
+the truecrypt bootloader for whole-disc-encrypted drives.
+this might prevent forensic software to detect drives that
+have been encrypted with truecrypt and/or might prevent "evil maid attacks".
+
+TODO:
+currently, tctools.py supports modification/obfuscation of
+the first ~ 0x200 bytes only which is insufficient since
+the truecrypt bootloader will load and execute a few more
+sectors. support for those needs to be added (probably
+by overwriting existing, less 'useful' functions such as
+the print function).
+
+nb: this is experimental stuff, use at your own risk!
