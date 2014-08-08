@@ -298,7 +298,7 @@ if len(sys.argv) < 2:
 
 
 tc = tctools()
-tcdev = sys.argv[1]
+tcDev = sys.argv[1]
 
 if not tc.OpenDevice(tcDev, "rb+"):
     print "error: could not open device"

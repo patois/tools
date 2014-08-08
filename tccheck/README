@@ -1,0 +1,54 @@
+README for tccheck.py
+
+
+What it is:
+===========
+This Python script is an integrity checker for full-disc encrypted
+TrueCrypt volumes, which can be used to check whether your TrueCrypt
+volume has been compromised by (governmental) malware, such as a bootkit
+or a keylogger.
+
+So far, it has been tested on TrueCrypt 7.1a but it might work on
+older/newer versions of TrueCrypt as well. The script may still falsely
+report unknown TrueCrypt versions due to the following reasons:
+
+- the script has not extensively been tested and may contain bugs
+- the version of TrueCrypt that has been used to encrypt the disc/image
+  is not (yet) supported by the script
+
+
+How it works:
+=============
+The script reads particular parts of the TrueCrypt Master Boot Record (MBR)
+and creates a SHA-256 hash of each of these parts. These hashes are then
+compared to hashes that are known to belong to TrueCrypt. 
+
+Unknown MBR components will be reported to the user, and can optionally be
+written to a user-defined path for further analysis.
+
+How to use:
+===========
+It is highly recommended to boot into a live operating system from a
+read-only medium (CD/DVD). Please also make sure to run the script using
+administrative privileges.
+
+The script's syntax on the command line is as follows:
+
+python tccheck.py <device> [path]
+
+device: can be either an image file of a TrueCrypt volume or a TrueCrypt
+        volume device's name
+
+path:   (optional) existing path that will be used to create output files
+
+
+The following example opens the device '\\.\PhysicalDrive0' and writes
+output files to the current directory:
+
+>python tccheck.py \\.\PhysicalDrive0 .
+* bootsector.bin: OK
+* decompressor.bin: OK
+* bootloader.gz: OK
+* backupBootloader.gz: OK
+
+done.
