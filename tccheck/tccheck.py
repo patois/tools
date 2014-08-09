@@ -49,34 +49,57 @@ class TCFS(object):
     DESC_BOOTSECTOR = "bootsector.bin"
     SECTOR_BOOTSECTOR = 1
     NUM_SECTORS_BOOTSECTOR = 1
-    SIZE_BOOTSECTOR  = 440
-    BOOTSECTOR_HASHES = ["0b0daedc5475b28df96104ae3d174da148ac71af59635c0728bef504c872b54d"]
+    SIZE_BOOTSECTOR_HASH  = 438
+    BOOTSECTOR_HASHES = ["ec574ce4a0ba33636821ab32e76e471718d6929b539f7179320b4c520cddd371"]
 
     DESC_DECOMPRESSOR = "decompressor.bin"
     SECTOR_DECOMPRESSOR = 2
     NUM_SECTORS_DECOMPRESSOR = 4
-    SIZE_DECOMPRESSOR = NUM_SECTORS_DECOMPRESSOR * SIZE_SECTOR
+    SIZE_DECOMPRESSOR_HASH = NUM_SECTORS_DECOMPRESSOR * SIZE_SECTOR
     DECOMPRESSOR_HASHES = ["0d0e31752933a6d469988df3019258a00c80ae7bfbaee965492e180ac19b0d96"]
 
     DESC_BOOTLOADER = "bootloader.gz"
     SECTOR_BOOTLOADER = 6
     NUM_SECTORS_BOOTLOADER = 0x39
-    SIZE_BOOTLOADER = NUM_SECTORS_BOOTLOADER * SIZE_SECTOR
+    SIZE_BOOTLOADER_HASH = NUM_SECTORS_BOOTLOADER * SIZE_SECTOR
     BOOTLOADER_HASHES = ["0c4e21cbe737d5545baec21e6515692796dde9f6d66be8b783c3f5dd3c99c839"]
 
     DESC_BACKUPBOOTLOADER = "backupBootloader.gz"
     SECTOR_BACKUPBOOTLOADER = 0x24
     NUM_SECTORS_BACKUPBOOTLOADER = 0x1A
-    SIZE_BACKUPBOOTLOADER = NUM_SECTORS_BACKUPBOOTLOADER * SIZE_SECTOR
+    SIZE_BACKUPBOOTLOADER_HASH = NUM_SECTORS_BACKUPBOOTLOADER * SIZE_SECTOR
     BACKUPBOOTLOADER_HASHES = ["343e70dbd48e2c8fc80313c9ad37ce757be53fee8b00a3ff43fd62524e83ccab"]
 
     def __init__(self):
         self.f = None
         self.tc_mbr_sectors = []
-        self.tc_mbr_sectors.append(TCSectors(self.DESC_BOOTSECTOR, self.SECTOR_BOOTSECTOR, self.NUM_SECTORS_BOOTSECTOR, self.SIZE_BOOTSECTOR, self.BOOTSECTOR_HASHES))
-        self.tc_mbr_sectors.append(TCSectors(self.DESC_DECOMPRESSOR, self.SECTOR_DECOMPRESSOR, self.NUM_SECTORS_DECOMPRESSOR, self.SIZE_DECOMPRESSOR, self.DECOMPRESSOR_HASHES))
-        self.tc_mbr_sectors.append(TCSectors(self.DESC_BOOTLOADER, self.SECTOR_BOOTLOADER, self.NUM_SECTORS_BOOTLOADER, self.SIZE_BOOTLOADER, self.BOOTLOADER_HASHES))
-        self.tc_mbr_sectors.append(TCSectors(self.DESC_BACKUPBOOTLOADER, self.SECTOR_BACKUPBOOTLOADER, self.NUM_SECTORS_BACKUPBOOTLOADER, self.SIZE_BACKUPBOOTLOADER, self.BACKUPBOOTLOADER_HASHES))      
+        self.tc_mbr_sectors.append( \
+            TCSectors(self.DESC_BOOTSECTOR, \
+                      self.SECTOR_BOOTSECTOR, \
+                      self.NUM_SECTORS_BOOTSECTOR, \
+                      self.SIZE_BOOTSECTOR_HASH, \
+                      self.BOOTSECTOR_HASHES))
+        
+        self.tc_mbr_sectors.append( \
+            TCSectors(self.DESC_DECOMPRESSOR, \
+                      self.SECTOR_DECOMPRESSOR, \
+                      self.NUM_SECTORS_DECOMPRESSOR, \
+                      self.SIZE_DECOMPRESSOR_HASH, \
+                      self.DECOMPRESSOR_HASHES))
+        
+        self.tc_mbr_sectors.append(\
+            TCSectors(self.DESC_BOOTLOADER, \
+                      self.SECTOR_BOOTLOADER, \
+                      self.NUM_SECTORS_BOOTLOADER, \
+                      self.SIZE_BOOTLOADER_HASH, \
+                      self.BOOTLOADER_HASHES))
+        
+        self.tc_mbr_sectors.append( \
+            TCSectors(self.DESC_BACKUPBOOTLOADER, \
+                      self.SECTOR_BACKUPBOOTLOADER, \
+                      self.NUM_SECTORS_BACKUPBOOTLOADER, \
+                      self.SIZE_BACKUPBOOTLOADER_HASH, \
+                      self.BACKUPBOOTLOADER_HASHES))      
 
     def open(self, dev, mode="rb"):
         result = False
@@ -141,7 +164,7 @@ if __name__ == "__main__":
         known = mbrsec.is_known()
         print("* %s: %s" % (desc, "OK" if known else "UNKNOWN!"))
         if not known:
-            errors.append("! %s: hash failure (unknown or compromised TrueCrypt version!)" % desc)
+            errors.append("! %s: hash failure (unknown or compromised TrueCrypt version!\n  %s)" % (desc, mbrsec.get_hash()))
         if path:
             if not mbrsec.dump_to_disc(os.path.join(path, desc)):
                 errors.append("! %s could not be written." % desc)
